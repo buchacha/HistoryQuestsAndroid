@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text = "Добавьте игроков"
+        android:layout_marginBottom="22dp"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation = "horizontal"
+        android:layout_marginBottom="22dp">
+
+        <EditText
+            android:id="@+id/edit_player_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="Имя" />
+
+        <Button
+            android:id="@+id/button_add_player"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Добавить игрока" />
+</LinearLayout>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="#000000"
+        android:text="Игроки: "/>
+    <TextView
+        android:id="@+id/show_players"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="120dp"/>
+
+    <Button
+        android:id="@+id/button_add_all_players"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Добавить и продолжить" />
+
+
+
+
+</LinearLayout>

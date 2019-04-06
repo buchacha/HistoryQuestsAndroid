@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+    <RelativeLayout
+
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="8dp" >
+
+        <LinearLayout
+            android:id="@+id/info_quest_activity"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/round_info_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:textAllCaps="true"
+                android:textColor="@android:color/black"
+                android:text="Станция 1 «Памятник Универсанту»" />
+            <TextView
+                android:id="@+id/round_info_description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="64dp"
+                android:textSize="18sp"
+                android:textColor="@android:color/black"
+                android:text="Университет - прежде всего это универсанты. Как ты думаешь, кто такой универсант? Какими чертами он должен обладать?" />
+
+
+
+            <TextView
+                android:id="@+id/go_to_task"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Перейти к вопросу"
+                android:paddingTop="18dp"
+                android:paddingBottom="18dp"
+                android:textSize="18sp"
+                android:textColor="@android:color/holo_orange_dark"
+                android:gravity="center_horizontal"
+                android:background="?android:attr/selectableItemBackground"
+                android:clickable="true"/>
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/empty_view_quest_info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Выбранный квест в разработке."
+            android:layout_centerInParent="true"
+            android:visibility="gone"
+            />
+    </RelativeLayout>
+</ScrollView>

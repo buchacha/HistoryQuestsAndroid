@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="22dp"
+        android:gravity="center">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text =
+                "Ура! Теперь все в сборе! Мы почти готовы к игре!
+    Расскажу тебе немного о правилах:
+    1. Квест включает в себя 12 основных заданий, однако по дороге будь внимателен. Быть
+    может где-то спрятались подсказки.
+    2. Квест рассчитан на 60-90 минут, все зависит от тебя!
+    3. Все, что тебе потребуется это телефон и помощь членов твоей команды!
+    4. Помогать и направлять буду тебя я, ведь совсем недавно я был так молод и шел с злебным обозом в Москву."
+            />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/lomonosov_is_going"
+            android:scaleType="centerCrop"
+            android:layout_margin="22dp"
+            />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="5. Путать тебя будет мой вечный оппонент, но чудесный человек и ученый Герхард Миллер.
+6. За правильные ответы ты будешь получать «ломоносовиков»! Желаю удачи! Мы
+должны выиграть. НАЧНЕМ!"
+            android:layout_marginBottom="22dp"/>
+
+
+        <Button
+            android:id="@+id/button_procced_from_rules"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Я все понял!" />
+
+
+    </LinearLayout>
+</ScrollView>

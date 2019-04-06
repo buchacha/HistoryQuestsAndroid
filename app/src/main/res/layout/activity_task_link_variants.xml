@@ -1,0 +1,289 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/main_scroll_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <LinearLayout
+        android:id="@+id/task_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_margin="11dp" >
+
+            <TextView
+                android:id="@+id/task_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="33dp"
+                android:textSize="18sp"
+                android:textAllCaps="true"
+                android:textColor="@android:color/black"
+                android:text="Станция 1 «kffkkfkfk»" />
+
+            <TextView
+                android:id="@+id/task_question"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:layout_marginBottom="22dp"
+                android:textColor="@android:color/black"
+                android:text="Вопрос на засыпку." />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/black"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:id="@+id/variants_layout"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Variant 1"
+                    android:gravity="center"
+                    android:padding="11dp"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Variant 2"
+                    android:gravity="center"
+                    android:padding="11dp"/>
+
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="@android:color/black"/>
+
+            <LinearLayout
+                android:id="@+id/answers_layout"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Answer 1"
+                    android:gravity="center"
+                    android:padding="11dp"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Answer 2"
+                    android:gravity="center"
+                    android:padding="11dp"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/black"
+            android:layout_marginBottom="22dp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:layout_marginBottom="22dp"
+            android:textColor="@android:color/black"
+            android:text="Расставьте варианты ответа нажатием" />
+        <RelativeLayout
+
+            android:layout_width="match_parent"
+            android:layout_height="100dp">
+
+            <TextView
+                android:id="@+id/answer1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Answer1"
+                android:padding="11dp"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentLeft="true"
+                android:clickable="true"
+                />
+
+            <TextView
+                android:id="@+id/answer2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Answer2"
+                android:padding="11dp"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:clickable="true"
+                />
+
+
+            <TextView
+                android:id="@+id/answer3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Answer3"
+                android:padding="11dp"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentRight="true"
+                android:clickable="true"
+                />
+
+            <TextView
+                android:id="@+id/answer4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Answer4"
+                android:padding="11dp"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentLeft="true"
+                android:clickable="true"
+                />
+
+            <TextView
+                android:id="@+id/answer5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Answer5"
+                android:padding="11dp"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:clickable="true"
+                />
+
+            <TextView
+                android:id="@+id/answer6"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Answer6"
+                android:padding="11dp"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentRight="true"
+                android:clickable="true"
+                />
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/check_answer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Ответить"
+            android:padding="11dp"
+            android:textSize="18sp"
+            android:textColor="@android:color/holo_orange_dark"
+            android:layout_gravity="center_horizontal"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true"/>
+        <TextView
+            android:id="@+id/reset_answer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:padding="11dp"
+            android:textSize="18sp"
+            android:text="Сбросить ответы"
+            android:layout_gravity="center_horizontal"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
+            android:textColor="@android:color/holo_orange_dark"
+            android:clickable="true"/>
+        <TextView
+            android:id="@+id/get_hint"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Получить подсказку"
+            android:padding="11dp"
+            android:textSize="18sp"
+            android:textColor="@android:color/holo_orange_dark"
+            android:layout_gravity="center_horizontal"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true"/>
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/darker_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:background="#B0000000" />
+
+    <ScrollView
+        android:id="@+id/after_task_scroll_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fillViewport="true"
+        android:visibility="gone"
+        android:layout_margin="33dp">
+        <LinearLayout
+            android:id="@+id/after_task_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="#FFFFFF"
+            android:padding="22dp" >
+
+            <TextView
+                android:id="@+id/after_task_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="22dp"
+                android:text="Молодец!" />
+
+
+            <TextView
+                android:id="@+id/after_task_go_main"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Вернуться на главную"
+                android:padding="11dp"
+                android:textSize="18sp"
+                android:textColor="@android:color/holo_orange_dark"
+                android:layout_gravity="center_horizontal"
+                android:background="?android:attr/selectableItemBackground"
+                android:clickable="true"/>
+            <TextView
+                android:id="@+id/after_task_go_next"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Следующая станция"
+                android:padding="11dp"
+                android:textSize="18sp"
+                android:layout_gravity="center_horizontal"
+                android:textColor="@android:color/holo_orange_dark"
+                android:background="?android:attr/selectableItemBackground"
+                android:clickable="true"/>
+            <TextView
+                android:id="@+id/after_task_repeat"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Ответить еще раз"
+                android:visibility="gone"
+                android:padding="11dp"
+                android:textSize="18sp"
+                android:layout_gravity="center_horizontal"
+                android:textColor="@android:color/holo_orange_dark"
+                android:background="?android:attr/selectableItemBackground"
+                android:clickable="true"/>
+
+        </LinearLayout>
+    </ScrollView>
+
+</FrameLayout>
+</ScrollView>
