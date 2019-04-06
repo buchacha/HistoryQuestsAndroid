@@ -11,10 +11,3 @@
 <p align="center">
   <img src="R0eHLIcJBkY.jpg" width="350" title="hover text">
 </p>
-  
-  <img src="2019-04-06 22_43_32-Window.png" width="350" title="hover text">
-  <img src="R0eHLIcJBkY.jpg" width="350" title="hover text">
-
-![Screenshot](PQw-VomJTPM.jpg)
-![Screenshot](2019-04-06 22_43_32-Window.png)
-![Screenshot](R0eHLIcJBkY.jpg)
