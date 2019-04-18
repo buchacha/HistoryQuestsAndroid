@@ -1,11 +1,14 @@
 <resources>
+    <!--meta-->
     <string name="app_name">Исторический MAXIMUM</string>
     <string name="site_url">http://historymax.ru/</string>
-    <string name="id_university_quest">512</string>
-    <string name="id_palace_square_quest">256</string>
+    <!--task type-->
     <string name="radio_button_task_type">0</string>
     <string name="check_box_task_type">1</string>
     <string name="edit_text_task_type">2</string>
     <string name="link_variants_task_type">3</string>
+    <!--media content type-->
+
+
 
 </resources>

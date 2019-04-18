@@ -28,7 +28,7 @@ public class ChooseQuestActivity extends AppCompatActivity {
         btnUniversityQuest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                questMetaData.questId = getString(R.string.id_university_quest);
+                questMetaData.questId = TemporaryQuests.ID_UNIVERSITY_QUEST;
                 Intent goToPlayersIntent = new Intent(ChooseQuestActivity.this, PlayersActivity.class);
                 goToPlayersIntent.putExtra("META_DATA", questMetaData);
                 startActivity(goToPlayersIntent);
@@ -38,7 +38,7 @@ public class ChooseQuestActivity extends AppCompatActivity {
         btnPalaceSquareQuest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                questMetaData.questId = getString(R.string.id_palace_square_quest);
+                questMetaData.questId = TemporaryQuests.ID_PALCE_SQUARE_QUEST;
                 Intent goToPlayersIntent = new Intent(ChooseQuestActivity.this, PlayersActivity.class);
                 goToPlayersIntent.putExtra("META_DATA", questMetaData);
                 startActivity(goToPlayersIntent);

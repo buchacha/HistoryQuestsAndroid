@@ -6,16 +6,16 @@ public class Round {
     private int countVariants;
     private String[] variants;
     private String[] questionVariants;
-    private int sourceType;
+    private String sourceType;
     private String sourceLink;
-    private int answer;
+    private String answer;
     private String questionType;
     private String additionalInfo;
     private String name;
     private AfterAnswer afterAnswer;
 
     public Round(int roundNum, String name, String additionalInfo, String questionType, String question, int countVariants,
-                 String[] variants, String[] questionVariants, int answer, int sourceType, String sourceLink,
+                 String[] variants, String[] questionVariants, String answer, String sourceType, String sourceLink,
                  AfterAnswer afterAnswer) {
         this.roundNum = roundNum;
         this.question = question;
@@ -47,7 +47,7 @@ public class Round {
         return variants;
     }
 
-    public int getSourceType() {
+    public String getSourceType() {
         return sourceType;
     }
 
@@ -55,7 +55,7 @@ public class Round {
         return sourceLink;
     }
 
-    public int getAnswer() {
+    public String getAnswer() {
         return answer;
     }
 

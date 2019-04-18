@@ -3,10 +3,10 @@ package com.example.android.historyquests;
 public class AfterAnswer {
     private String textIfRight;
     private String textIfWrong;
-    private int sourceType;
+    private String sourceType;
     private String sourceLink;
 
-    public AfterAnswer(String textIfRight, String textIfWrong, int sourceType, String sourceLink) {
+    public AfterAnswer(String textIfRight, String textIfWrong, String sourceType, String sourceLink) {
         this.textIfRight = textIfRight;
         this.textIfWrong = textIfWrong;
         this.sourceType = sourceType;
@@ -21,7 +21,7 @@ public class AfterAnswer {
         return textIfWrong;
     }
 
-    public int getSourceType() {
+    public String getSourceType() {
         return sourceType;
     }
 

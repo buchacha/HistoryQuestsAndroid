@@ -32,18 +32,35 @@ public class RulesActivity extends AppCompatActivity {
                     Intent goToQuest = new Intent(RulesActivity.this, RoundInfo.class);
                     goToQuest.putExtra("META_DATA", questMetaData);
                     startActivity(goToQuest);
-                } else {
-                    Round currentRound = currentQuest.getRounds()[0];
-                    String additionalInfo = currentRound.getAdditionalInfo();
-                    if (additionalInfo == null || additionalInfo == "") {
-                        Intent goToQuest = new Intent(RulesActivity.this, RadioButtonActivity.class);
-                        goToQuest.putExtra("META_DATA", questMetaData);
-                        startActivity(goToQuest);
-                    } else {
-                        Intent goToQuest = new Intent(RulesActivity.this, RoundInfo.class);
-                        goToQuest.putExtra("META_DATA", questMetaData);
-                        startActivity(goToQuest);
+                    return;
+                }
+                Round currentRound = currentQuest.getRounds()[0];
+                String additionalInfo = currentRound.getAdditionalInfo();
+
+                if (additionalInfo == null || additionalInfo == "") {
+                    switch (currentRound.getQuestionType()) {
+                        case TemporaryQuests.RADIO_BUTTON_TASK_TYPE:
+                            Intent goNextRound = new Intent(RulesActivity.this, RadioButtonActivity.class);
+                            goNextRound.putExtra("META_DATA", questMetaData);
+                            startActivity(goNextRound);
+                            break;
+                        case TemporaryQuests.CHECK_BOX_TASK_TYPE:
+                            goNextRound = new Intent(RulesActivity.this, CheckBoxActivity.class);
+                            goNextRound.putExtra("META_DATA", questMetaData);
+                            startActivity(goNextRound);
+                            break;
+                        case TemporaryQuests.LINK_VARIANTS_TASK_TYPE:
+                            goNextRound = new Intent(RulesActivity.this, LinkVariantsActivity.class);
+                            goNextRound.putExtra("META_DATA", questMetaData);
+                            startActivity(goNextRound);
+                            break;
+                        default:
+                            Toast.makeText(getApplicationContext(), "Данный тип вопроса в разработке", Toast.LENGTH_LONG).show();
                     }
+                } else {
+                    Intent goToQuest = new Intent(RulesActivity.this, RoundInfo.class);
+                    goToQuest.putExtra("META_DATA", questMetaData);
+                    startActivity(goToQuest);
                 }
             }
         });

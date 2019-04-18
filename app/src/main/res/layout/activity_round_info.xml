@@ -32,13 +32,27 @@
                 android:textColor="@android:color/black"
                 android:text="Университет - прежде всего это универсанты. Как ты думаешь, кто такой универсант? Какими чертами он должен обладать?" />
 
+            <com.google.android.youtube.player.YouTubePlayerView
+                android:id="@+id/youtubePlayView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
+            </com.google.android.youtube.player.YouTubePlayerView>
+
+
+            <Button
+                android:id="@+id/btnPlay"
+                android:layout_gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Воспроизвести" />
 
             <TextView
                 android:id="@+id/go_to_task"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Перейти к вопросу"
+                android:layout_marginTop="22dp"
                 android:paddingTop="18dp"
                 android:paddingBottom="18dp"
                 android:textSize="18sp"

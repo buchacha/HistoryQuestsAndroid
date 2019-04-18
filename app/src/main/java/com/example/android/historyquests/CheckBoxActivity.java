@@ -7,10 +7,11 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -18,7 +19,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class RadioButtonActivity extends AppCompatActivity {
+public class CheckBoxActivity extends AppCompatActivity {
 
     private QuestMetaData questMetaData;
     private Round currentRound;
@@ -26,9 +27,8 @@ public class RadioButtonActivity extends AppCompatActivity {
     private LinearLayout taskLayout;
     private TextView title;
     private TextView question;
-    private RadioGroup radioGroup;
+    private LinearLayout checkGroup;
 
-    private boolean iWasHere;
     private TextView checkAnswer;
     private TextView getHint;
 
@@ -40,12 +40,22 @@ public class RadioButtonActivity extends AppCompatActivity {
     private TextView afterTaskGoNext;
     private TextView afterTaskRepeat;
 
+    private CheckBox answer1;
+    private CheckBox answer2;
+    private CheckBox answer3;
+    private CheckBox answer4;
+    private CheckBox answer5;
+    private CheckBox answer6;
+
+    private int[] answerIds = new int[6];
+
+    private boolean iWasHere;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_task_radio_button);
-
+        setContentView(R.layout.activity_task_check_box);
 
         iWasHere = false;
         Intent intent = getIntent();
@@ -61,7 +71,7 @@ public class RadioButtonActivity extends AppCompatActivity {
                 String currentAnswer = retrieveAnswer();
                 String rightAnswer = currentRound.getAnswer();
 
-                if (currentAnswer.equals("-1")) {
+                if (currentAnswer.equals("")) {
                     Toast.makeText(getApplicationContext(), "Введите Ваш ответ", Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -85,7 +95,7 @@ public class RadioButtonActivity extends AppCompatActivity {
         afterTaskGoMain.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = NavUtils.getParentActivityIntent(RadioButtonActivity.this);
+                Intent i = NavUtils.getParentActivityIntent(CheckBoxActivity.this);
                 startActivity(i);
             }
         });
@@ -96,18 +106,6 @@ public class RadioButtonActivity extends AppCompatActivity {
                 goNextRound();
             }
         });
-    }
-
-    @Override
-    public void onResume()
-    {  // After a pause OR at startup
-        super.onResume();
-        if (iWasHere)
-            questMetaData.lastRoundNum--;
-        setClickable(taskLayout);
-        darkerView.setVisibility(View.GONE);
-        afterTaskScrollView.setVisibility(View.GONE);
-
     }
 
     @Override
@@ -164,16 +162,28 @@ public class RadioButtonActivity extends AppCompatActivity {
             return;
         }
         if (currentQuest == null) {
-            Intent goNextRound = new Intent(RadioButtonActivity.this, RoundInfo.class);
+            Intent goNextRound = new Intent(CheckBoxActivity.this, RoundInfo.class);
             goNextRound.putExtra("META_DATA", questMetaData);
             startActivity(goNextRound);
         } else {
 
             questMetaData.lastRoundNum++;
-            Intent goToChooseQuestIntent = new Intent(RadioButtonActivity.this, WhileGoingQr.class);
+            Intent goToChooseQuestIntent = new Intent(CheckBoxActivity.this, WhileGoingQr.class);
             goToChooseQuestIntent.putExtra("META_DATA", questMetaData);
             startActivity(goToChooseQuestIntent);
         }
+
+    }
+
+    @Override
+    public void onResume()
+    {  // After a pause OR at startup
+        super.onResume();
+        if (iWasHere)
+            questMetaData.lastRoundNum--;
+        setClickable(taskLayout);
+        darkerView.setVisibility(View.GONE);
+        afterTaskScrollView.setVisibility(View.GONE);
 
     }
 
@@ -188,7 +198,6 @@ public class RadioButtonActivity extends AppCompatActivity {
             }
         }
     }
-
     private void setClickable(View view) {
         if (view != null) {
             view.setClickable(true);
@@ -227,24 +236,47 @@ public class RadioButtonActivity extends AppCompatActivity {
         int roundIdx = questMetaData.lastRoundNum+1;
         title.setText("Станция " + Integer.toString(roundIdx+1) + ". " + currentRound.getName());
         question.setText(currentRound.getQuestion());
-        setupRadioGroup();
+        initCheckGroup();
+        setupCheckGroup();
     }
-
-    private String retrieveAnswer() {
-        String selectedId = Integer.toString(radioGroup.getCheckedRadioButtonId());
-        return selectedId;
-    }
-    private void setupRadioGroup() {
+    private void setupCheckGroup() {
         String[] variants = currentRound.getVariants();
-        RadioButton button;
-        radioGroup.removeAllViews();
+
         for (int i = 0; i < currentRound.getCountVariants(); i++) {
-            button = new RadioButton(this);
-            button.setText(variants[i]);
-            button.setPadding(11, 11, 11, 11);
-            button.setId(i);
-            radioGroup.addView(button);
+            CheckBox chb = findViewById(answerIds[i]);
+            chb.setText(variants[i]);
+            chb.setPadding(11, 11, 11, 11);
         }
+        for (int i = currentRound.getCountVariants(); i < 6; i++) {
+            CheckBox chb = findViewById(answerIds[i]);
+            chb.setVisibility(View.GONE);
+        }
+    }
+    private void initCheckGroup() {
+        answer1 = findViewById(R.id.answer1);
+        answerIds[0] = answer1.getId();
+        answer2 = findViewById(R.id.answer2);
+        answerIds[1] = answer2.getId();
+        answer3 = findViewById(R.id.answer3);
+        answerIds[2] = answer3.getId();
+        answer4 = findViewById(R.id.answer4);
+        answerIds[3] = answer4.getId();
+        answer5 = findViewById(R.id.answer5);
+        answerIds[4] = answer5.getId();
+        answer6 = findViewById(R.id.answer6);
+        answerIds[5] = answer6.getId();
+    }
+    private String retrieveAnswer() {
+        String res = "";
+        int numOfAnswers = currentRound.getCountVariants();
+        for (int i = 0; i < numOfAnswers; i++) {
+            CheckBox chb = findViewById(answerIds[i]);
+            if (chb.isChecked()) {
+                res += Integer.toString(i+1);
+            }
+        }
+
+        return res;
     }
 
     private void setCurrentRound() {
@@ -256,7 +288,7 @@ public class RadioButtonActivity extends AppCompatActivity {
         taskLayout = findViewById(R.id.task_layout);
         title = findViewById(R.id.task_title);
         question = findViewById(R.id.task_question);
-        radioGroup = findViewById(R.id.task_radio_group);
+        checkGroup = findViewById(R.id.checkGroup);
         checkAnswer = findViewById(R.id.check_answer);
         getHint = findViewById(R.id.get_hint);
 

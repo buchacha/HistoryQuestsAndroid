@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <LinearLayout
+        android:id="@+id/task_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_margin="11dp">
+
+        <TextView
+            android:id="@+id/task_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="33dp"
+            android:textSize="18sp"
+            android:textAllCaps="true"
+            android:textColor="@android:color/black"
+            android:text="Станция 1 «kffkkfkfk»" />
+
+        <TextView
+            android:id="@+id/task_question"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:textColor="@android:color/black"
+            android:text="Вопрос на засыпку. Как ты думаешь, кто такой универсант? Какими чертами он должен обладать?" />
+
+        <LinearLayout
+            android:id="@+id/checkGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <CheckBox
+                android:id="@+id/answer1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="answer1" />
+            <CheckBox
+                android:id="@+id/answer2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="answer2" />
+            <CheckBox
+                android:id="@+id/answer3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="answer3" />
+            <CheckBox
+                android:id="@+id/answer4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="answer4" />
+            <CheckBox
+                android:id="@+id/answer5"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="answer5" />
+            <CheckBox
+                android:id="@+id/answer6"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="answer6" />
+
+
+        </LinearLayout>
+        <TextView
+            android:id="@+id/check_answer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Ответить"
+            android:padding="11dp"
+            android:textSize="18sp"
+            android:textColor="@android:color/holo_orange_dark"
+            android:layout_gravity="center_horizontal"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true"/>
+        <TextView
+            android:id="@+id/get_hint"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Получить подсказку"
+            android:padding="11dp"
+            android:textSize="18sp"
+            android:textColor="@android:color/holo_orange_dark"
+            android:layout_gravity="center_horizontal"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true"/>
+
+    </LinearLayout>
+
+
+    <TextView
+        android:id="@+id/darker_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:background="#B0000000" />
+
+    <ScrollView
+        android:id="@+id/after_task_scroll_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        android:visibility="gone"
+        android:layout_margin="33dp">
+        <LinearLayout
+            android:id="@+id/after_task_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:background="#FFFFFF"
+            android:padding="22dp" >
+
+            <TextView
+                android:id="@+id/after_task_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="22dp"
+                android:text="Молодец!" />
+
+
+            <TextView
+                android:id="@+id/after_task_go_main"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Вернуться на главную"
+                android:padding="11dp"
+                android:textSize="18sp"
+                android:textColor="@android:color/holo_orange_dark"
+                android:layout_gravity="center_horizontal"
+                android:background="?android:attr/selectableItemBackground"
+                android:clickable="true"/>
+            <TextView
+                android:id="@+id/after_task_go_next"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Следующая станция"
+                android:padding="11dp"
+                android:textSize="18sp"
+                android:layout_gravity="center_horizontal"
+                android:textColor="@android:color/holo_orange_dark"
+                android:background="?android:attr/selectableItemBackground"
+                android:clickable="true"/>
+            <TextView
+                android:id="@+id/after_task_repeat"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Ответить еще раз"
+                android:visibility="gone"
+                android:padding="11dp"
+                android:textSize="18sp"
+                android:layout_gravity="center_horizontal"
+                android:textColor="@android:color/holo_orange_dark"
+                android:background="?android:attr/selectableItemBackground"
+                android:clickable="true"/>
+
+        </LinearLayout>
+    </ScrollView>
+
+</RelativeLayout>

@@ -1,5 +1,7 @@
 package com.example.android.historyquests;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -7,6 +9,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -54,11 +57,14 @@ public class LinkVariantsActivity extends AppCompatActivity {
 
     private int[] answerIds = new int[6];
 
+    private boolean iWasHere;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_task_link_variants);
 
+        iWasHere = false;
         Intent intent = getIntent();
         questMetaData = (QuestMetaData) intent.getExtras().getSerializable("META_DATA");
 
@@ -68,7 +74,6 @@ public class LinkVariantsActivity extends AppCompatActivity {
         initViews();
         setupViews();
         setListeners();
-
 
 
         resetAnswer.setOnClickListener(new View.OnClickListener() {
@@ -85,7 +90,7 @@ public class LinkVariantsActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                String rightAnswer = Integer.toString(currentRound.getAnswer());
+                String rightAnswer = currentRound.getAnswer();
                 if (rightAnswer.equals(currentAnswerState)){
                     showAfterTask(true);
                 } else {
@@ -119,49 +124,81 @@ public class LinkVariantsActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    public void onResume()
+    {  // After a pause OR at startup
+        super.onResume();
+        if (iWasHere)
+            questMetaData.lastRoundNum--;
+        setClickable(taskLayout);
+        darkerView.setVisibility(View.GONE);
+        afterTaskScrollView.setVisibility(View.GONE);
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+
+                DialogInterface.OnClickListener discardButtonClickListener =
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                // User clicked "Discard" button, navigate to parent activity.
+                                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                startActivity(intent);
+                            }
+                        };
+
+                // Show a dialog that notifies the user they have unsaved changes
+                showUnsavedChangesDialog(discardButtonClickListener);
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+
+    @Override
+    public void onBackPressed() {
+
+        DialogInterface.OnClickListener discardButtonClickListener =
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        // User clicked "Discard" button, close the current activity.
+                        finish();
+                    }
+                };
+
+        // Show dialog that there are unsaved changes
+        showUnsavedChangesDialog(discardButtonClickListener);
+    }
+
     private void goNextRound() {
 
-
+        iWasHere = true;
         int nextRoundIdx = questMetaData.lastRoundNum + 2;
         Quest currentQuest = TemporaryQuests.questsHashMap.get(questMetaData.questId);
 
         if (nextRoundIdx == currentQuest.getCountRounds()) {
             Toast.makeText(getApplicationContext(), "Вы завершили квест полностью. С победой!", Toast.LENGTH_LONG).show();
-            Intent i = NavUtils.getParentActivityIntent(LinkVariantsActivity.this);
-            startActivity(i);
+            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
             return;
         }
 
-
-        Round nextRound = currentQuest.getRounds()[nextRoundIdx];
-        String additionalInfo = nextRound.getAdditionalInfo();
-        if (additionalInfo == null || additionalInfo == "") {
-            questMetaData.lastRoundNum++;
-            switch (nextRound.getQuestionType()) {
-                case "0":
-                    Intent goNextRound = new Intent(LinkVariantsActivity.this, RadioButtonActivity.class);
-                    goNextRound.putExtra("META_DATA", questMetaData);
-                    startActivity(goNextRound);
-                    break;
-                case "1":
-                    Toast.makeText(getApplicationContext(), "Данный тип вопроса в разработке", Toast.LENGTH_LONG).show();
-                    break;
-                default:
-                    Toast.makeText(getApplicationContext(), "Данный тип вопроса в разработке", Toast.LENGTH_LONG).show();
-            }
-
-        } else {
-            questMetaData.lastRoundNum++;
-            Intent goToQuest = new Intent(LinkVariantsActivity.this, RoundInfo.class);
-            goToQuest.putExtra("META_DATA", questMetaData);
-            startActivity(goToQuest);
-        }
-
+        questMetaData.lastRoundNum++;
+        Intent goToChooseQuestIntent = new Intent(LinkVariantsActivity.this, WhileGoingQr.class);
+        goToChooseQuestIntent.putExtra("META_DATA", questMetaData);
+        startActivity(goToChooseQuestIntent);
 
     }
 
     private void showAfterTask(boolean isRight) {
-        setClickable(taskLayout);
+        setUnClickable(taskLayout);
         darkerView.setVisibility(View.VISIBLE);
         afterTaskScrollView.setVisibility(View.VISIBLE);
         mainScrollView.scrollTo(0, 0);
@@ -322,9 +359,20 @@ public class LinkVariantsActivity extends AppCompatActivity {
         answer6 = (TextView) findViewById(R.id.answer6);
         answerIds[5] = answer6.getId();
     }
-    private void setClickable(View view) {
+    private void setUnClickable(View view) {
         if (view != null) {
             view.setClickable(false);
+            if (view instanceof ViewGroup) {
+                ViewGroup vg = ((ViewGroup) view);
+                for (int i = 0; i < vg.getChildCount(); i++) {
+                    setUnClickable(vg.getChildAt(i));
+                }
+            }
+        }
+    }
+    private void setClickable(View view) {
+        if (view != null) {
+            view.setClickable(true);
             if (view instanceof ViewGroup) {
                 ViewGroup vg = ((ViewGroup) view);
                 for (int i = 0; i < vg.getChildCount(); i++) {
@@ -332,6 +380,28 @@ public class LinkVariantsActivity extends AppCompatActivity {
                 }
             }
         }
+    }
+
+    private void showUnsavedChangesDialog(
+            DialogInterface.OnClickListener discardButtonClickListener) {
+        // Create an AlertDialog.Builder and set the message, and click listeners
+        // for the postivie and negative buttons on the dialog.
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Вернуться назад без сохранения?");
+        builder.setPositiveButton("Да", discardButtonClickListener);
+        builder.setNegativeButton("Нет", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // User clicked the "Keep editing" button, so dismiss the dialog
+                // and continue editing the pet.
+                if (dialog != null) {
+                    dialog.dismiss();
+                }
+            }
+        });
+
+        // Create and show the AlertDialog
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
     }
 
 }

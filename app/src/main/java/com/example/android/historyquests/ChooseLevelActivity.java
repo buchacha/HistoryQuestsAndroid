@@ -30,7 +30,7 @@ public class ChooseLevelActivity extends AppCompatActivity {
                 questMetaData = new QuestMetaData("0", -1,false, 0, null);
                 questMetaData.level = 1;
 
-                Intent goToChooseQuestIntent = new Intent(ChooseLevelActivity.this, ChooseQuestActivity.class);
+                Intent goToChooseQuestIntent = new Intent(ChooseLevelActivity.this, QrReadActivity.class);
                 goToChooseQuestIntent.putExtra("META_DATA", questMetaData);
                 startActivity(goToChooseQuestIntent);
 
@@ -44,7 +44,7 @@ public class ChooseLevelActivity extends AppCompatActivity {
                 questMetaData = new QuestMetaData("0", -1,false, 0, null);
                 questMetaData.level = 2;
 
-                Intent goToChooseQuestIntent = new Intent(ChooseLevelActivity.this, ChooseQuestActivity.class);
+                Intent goToChooseQuestIntent = new Intent(ChooseLevelActivity.this, QrReadActivity.class);
                 goToChooseQuestIntent.putExtra("META_DATA", questMetaData);
                 startActivity(goToChooseQuestIntent);
 
@@ -58,7 +58,7 @@ public class ChooseLevelActivity extends AppCompatActivity {
                 questMetaData = new QuestMetaData("0", -1,false, 0, null);
                 questMetaData.level = 3;
 
-                Intent goToChooseQuestIntent = new Intent(ChooseLevelActivity.this, ChooseQuestActivity.class);
+                Intent goToChooseQuestIntent = new Intent(ChooseLevelActivity.this, QrReadActivity.class);
                 goToChooseQuestIntent.putExtra("META_DATA", questMetaData);
                 startActivity(goToChooseQuestIntent);
 
