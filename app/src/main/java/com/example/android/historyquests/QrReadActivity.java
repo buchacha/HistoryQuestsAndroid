@@ -4,12 +4,10 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.LoaderManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.util.SparseArray;
@@ -23,8 +21,6 @@ import com.google.android.gms.vision.barcode.Barcode;
 import com.google.android.gms.vision.barcode.BarcodeDetector;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.concurrent.TimeUnit;
 
 public class QrReadActivity extends AppCompatActivity {
 
@@ -48,6 +44,16 @@ public class QrReadActivity extends AppCompatActivity {
         Intent intent = getIntent();
         questMetaData = (QuestMetaData) intent.getExtras().getSerializable("META_DATA");
         isWrongQr = (boolean) intent.getBooleanExtra("WRONG_QR", false);
+
+//        if (isAdvert()) {
+//            goAdvert();
+//        }
+        if (!isQr()) {
+            goNextIfNotQr();
+        }
+//        if (isHint()) {
+//            goHint();
+//        }
 
         read = false;
         initMetaData();
@@ -109,17 +115,62 @@ public class QrReadActivity extends AppCompatActivity {
 
     }
 
+    private void goNextIfNotQr() {
+        if (!questMetaData.questId.equals(TemporaryQuests.NULL_QUEST)) {
+
+            int nextRoundIdx = questMetaData.lastRoundNum + 1;
+            Quest currentQuest = TemporaryQuests.questsHashMap.get(questMetaData.questId);
+
+            Round nextRound = currentQuest.getRounds()[nextRoundIdx];
+            String additionalInfo = nextRound.getRoundInfo().getInfo();
+
+            if (additionalInfo == null || additionalInfo == "") {
+                switch (nextRound.getQuestionType()) {
+                    case TemporaryQuests.RADIO_BUTTON_TASK_TYPE:
+                        Intent goNextRound = new Intent(QrReadActivity.this, RadioButtonActivity.class);
+                        goNextRound.putExtra("META_DATA", questMetaData);
+                        startActivity(goNextRound);
+                        break;
+                    case TemporaryQuests.CHECK_BOX_TASK_TYPE:
+                        goNextRound = new Intent(QrReadActivity.this, CheckBoxActivity.class);
+                        goNextRound.putExtra("META_DATA", questMetaData);
+                        startActivity(goNextRound);
+                        break;
+                    case TemporaryQuests.LINK_VARIANTS_TASK_TYPE:
+                        goNextRound = new Intent(QrReadActivity.this, LinkVariantsActivity.class);
+                        goNextRound.putExtra("META_DATA", questMetaData);
+                        startActivity(goNextRound);
+                        break;
+                    default:
+                        Toast.makeText(getApplicationContext(), "Данный тип вопроса в разработке", Toast.LENGTH_LONG).show();
+                }
+            } else {
+
+                Intent goToQuest = new Intent(QrReadActivity.this, RoundInfoActivity.class);
+                goToQuest.putExtra("META_DATA", questMetaData);
+                startActivity(goToQuest);
+            }
+
+
+        } else if (questMetaData.questId.equals(TemporaryQuests.NULL_QUEST) && qrQuestMetaData.lastRoundNum == -1) {
+            goPlayersActivity();
+        }
+    }
     private void goNextRound() {
 //
-        if (!questMetaData.questId.equals(TemporaryQuests.NULL_QUEST)) {
+        if (!questMetaData.questId.equals(TemporaryQuests.NULL_QUEST) && !qrQuestMetaData.questId.equals(TemporaryQuests.WRONG_QUEST_ID)) {
             if (qrQuestMetaData.questId.equals(questMetaData.questId) && qrQuestMetaData.lastRoundNum == questMetaData.lastRoundNum) {
                 int nextRoundIdx = questMetaData.lastRoundNum + 1;
                 Quest currentQuest = TemporaryQuests.questsHashMap.get(questMetaData.questId);
 
                 Round nextRound = currentQuest.getRounds()[nextRoundIdx];
-                String additionalInfo = nextRound.getAdditionalInfo();
+                //String additionalInfo = nextRound.getRoundInfo().getInfo();
 
-                if (additionalInfo == null || additionalInfo == "") {
+                if (nextRound.isAddInfo()){
+                    Intent goToQuest = new Intent(QrReadActivity.this, RoundInfoActivity.class);
+                    goToQuest.putExtra("META_DATA", questMetaData);
+                    startActivity(goToQuest);
+                } else {
                     switch (nextRound.getQuestionType()) {
                         case TemporaryQuests.RADIO_BUTTON_TASK_TYPE:
                             Intent goNextRound = new Intent(QrReadActivity.this, RadioButtonActivity.class);
@@ -139,15 +190,11 @@ public class QrReadActivity extends AppCompatActivity {
                         default:
                             Toast.makeText(getApplicationContext(), "Данный тип вопроса в разработке", Toast.LENGTH_LONG).show();
                     }
-                } else {
-
-                    Intent goToQuest = new Intent(QrReadActivity.this, RoundInfo.class);
-                    goToQuest.putExtra("META_DATA", questMetaData);
-                    startActivity(goToQuest);
                 }
 
             } else {
 
+                Log.e(LOG_TAG, "A : lastRoundNum: qrQuestMetaData: " + qrQuestMetaData.lastRoundNum + ", questMetaData: " + questMetaData.lastRoundNum);
                 QrReadActivity.this.runOnUiThread(new Runnable() {
                     public void run() {
                         Toast.makeText(context, "Что-то пошло не так и Вы считали неверный QR-код.\nПопробуйте еще раз", Toast.LENGTH_LONG).show();
@@ -166,8 +213,9 @@ public class QrReadActivity extends AppCompatActivity {
             }
        }
 
-        if (qrQuestMetaData.questId.equals(TemporaryQuests.WRONG_QUEST_ID) || qrQuestMetaData.lastRoundNum != -1) {
+        if (qrQuestMetaData.questId.equals(TemporaryQuests.WRONG_QUEST_ID) && qrQuestMetaData.lastRoundNum != -1) {
 
+            Log.e(LOG_TAG, "B : lastRoundNum: qrQuestMetaData: " + qrQuestMetaData.lastRoundNum + ", questMetaData: " + questMetaData.lastRoundNum);
             QrReadActivity.this.runOnUiThread(new Runnable() {
                 public void run() {
                     Toast.makeText(context, "Что-то пошло не так и Вы считали неверный QR-код.\n" +
@@ -233,6 +281,16 @@ public class QrReadActivity extends AppCompatActivity {
                 .setBarcodeFormats(Barcode.QR_CODE).build();
         cs = new CameraSource.Builder(this, bd)
                 .setRequestedPreviewSize(640, 480).build();
+    }
+
+    private boolean isQr() {
+        int nextRoundIdx = questMetaData.lastRoundNum + 1;
+        Quest currentQuest = TemporaryQuests.questsHashMap.get(questMetaData.questId);
+        Round nextRound = currentQuest.getRounds()[nextRoundIdx];
+
+        boolean res = nextRound.isQr();
+
+        return res;
     }
 
 }

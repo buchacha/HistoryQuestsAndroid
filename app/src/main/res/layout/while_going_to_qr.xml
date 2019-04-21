@@ -1,25 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+    <LinearLayout
+        android:orientation="vertical" android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Пока ты идешь к следующему qr-коду...
-(здесь будет карта или картинка маршрута)"
-        android:textAlignment="center"
-        android:layout_alignParentBottom="true"
-        android:layout_centerInParent="true"
-        android:layout_marginTop="88dp"
-        android:layout_marginBottom="88dp"
-        />
+        <TextView
+            android:id="@+id/routeInfo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Пока ты идешь к следующему qr-коду...
+    (здесь будет карта или картинка маршрута)"
+            android:textAlignment="center"
+            android:layout_alignParentBottom="true"
+            android:layout_centerInParent="true"
+            android:layout_marginTop="11dp"
+            android:layout_marginBottom="11dp"
+            />
 
-    <Button
-        android:id="@+id/btn_end_route"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Я на месте!" />
+        <ImageView
+            android:id="@+id/imgView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scaleType="centerCrop"
+            android:visibility="gone"/>
+
+        <com.google.android.youtube.player.YouTubePlayerView
+            android:id="@+id/youtubeView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone">
+
+        </com.google.android.youtube.player.YouTubePlayerView>
+        <Button
+            android:id="@+id/btnPlay"
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Воспроизвести"
+            android:visibility="gone"/>
+        <Button
+            android:id="@+id/btn_end_route"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Я на месте!" />
 
 
-</LinearLayout>
+    </LinearLayout>
+</ScrollView>

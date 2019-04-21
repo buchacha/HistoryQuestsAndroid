@@ -4,13 +4,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
 public class RulesActivity extends AppCompatActivity {
 
+    private String LOG_TAG = RulesActivity.class.getSimpleName();
     private Button btnGoToQuest;
     private QuestMetaData questMetaData;
     @Override
@@ -29,16 +29,29 @@ public class RulesActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Quest currentQuest = TemporaryQuests.questsHashMap.get(questMetaData.questId);
                 if (currentQuest == null) {
-                    Intent goToQuest = new Intent(RulesActivity.this, RoundInfo.class);
+                    Intent goToQuest = new Intent(RulesActivity.this, RoundInfoActivity.class);
                     goToQuest.putExtra("META_DATA", questMetaData);
                     startActivity(goToQuest);
                     return;
                 }
-                Round currentRound = currentQuest.getRounds()[0];
-                String additionalInfo = currentRound.getAdditionalInfo();
+                int nextRoundIdx = questMetaData.lastRoundNum + 1;
+                Round nextRound = currentQuest.getRounds()[nextRoundIdx];
 
-                if (additionalInfo == null || additionalInfo == "") {
-                    switch (currentRound.getQuestionType()) {
+                if (nextRound.isRoute()) {
+                    Intent goRoute = new Intent(RulesActivity.this, WhileGoingQr.class);
+                    goRoute.putExtra("META_DATA", questMetaData);
+                    startActivity(goRoute);
+                } else if (nextRound.isQr()) {
+                    Intent goQr = new Intent(RulesActivity.this, QrReadActivity.class);
+                    goQr.putExtra("META_DATA", questMetaData);
+                    startActivity(goQr);
+                }
+                else if (nextRound.isAddInfo()){
+                    Intent goToQuest = new Intent(RulesActivity.this, RoundInfoActivity.class);
+                    goToQuest.putExtra("META_DATA", questMetaData);
+                    startActivity(goToQuest);
+                } else {
+                    switch (nextRound.getQuestionType()) {
                         case TemporaryQuests.RADIO_BUTTON_TASK_TYPE:
                             Intent goNextRound = new Intent(RulesActivity.this, RadioButtonActivity.class);
                             goNextRound.putExtra("META_DATA", questMetaData);
@@ -57,12 +70,28 @@ public class RulesActivity extends AppCompatActivity {
                         default:
                             Toast.makeText(getApplicationContext(), "Данный тип вопроса в разработке", Toast.LENGTH_LONG).show();
                     }
-                } else {
-                    Intent goToQuest = new Intent(RulesActivity.this, RoundInfo.class);
-                    goToQuest.putExtra("META_DATA", questMetaData);
-                    startActivity(goToQuest);
                 }
             }
         });
+    }
+
+    private boolean isQr() {
+        int nextRoundIdx = questMetaData.lastRoundNum + 1;
+        Quest currentQuest = TemporaryQuests.questsHashMap.get(questMetaData.questId);
+        Round nextRound = currentQuest.getRounds()[nextRoundIdx];
+
+        boolean res = nextRound.isQr();
+
+        return res;
+    }
+
+    private boolean isRoute() {
+        int nextRoundIdx = questMetaData.lastRoundNum + 1;
+        Quest currentQuest = TemporaryQuests.questsHashMap.get(questMetaData.questId);
+        Round nextRound = currentQuest.getRounds()[nextRoundIdx];
+
+        boolean res = nextRound.isRoute();
+
+        return res;
     }
 }

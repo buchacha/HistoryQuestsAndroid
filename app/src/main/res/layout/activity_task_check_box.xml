@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+    <FrameLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
 
     <LinearLayout
         android:id="@+id/task_layout"
@@ -29,6 +33,27 @@
             android:textColor="@android:color/black"
             android:text="Вопрос на засыпку. Как ты думаешь, кто такой универсант? Какими чертами он должен обладать?" />
 
+        <ImageView
+            android:id="@+id/imgView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scaleType="centerCrop"
+            android:visibility="gone"/>
+
+        <com.google.android.youtube.player.YouTubePlayerView
+            android:id="@+id/youtubeView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone">
+
+        </com.google.android.youtube.player.YouTubePlayerView>
+        <Button
+            android:id="@+id/btnPlay"
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Воспроизвести"
+            android:visibility="gone"/>
         <LinearLayout
             android:id="@+id/checkGroup"
             android:layout_width="match_parent"
@@ -104,7 +129,7 @@
     <ScrollView
         android:id="@+id/after_task_scroll_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:fillViewport="true"
         android:visibility="gone"
         android:layout_margin="33dp">
@@ -123,6 +148,27 @@
                 android:layout_marginBottom="22dp"
                 android:text="Молодец!" />
 
+            <ImageView
+                android:id="@+id/imgViewAfter"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scaleType="centerCrop"
+                android:visibility="gone"/>
+
+            <com.google.android.youtube.player.YouTubePlayerView
+                android:id="@+id/youtubeViewAfter"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone">
+
+            </com.google.android.youtube.player.YouTubePlayerView>
+            <Button
+                android:id="@+id/btnPlayAfter"
+                android:layout_gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Воспроизвести"
+                android:visibility="gone"/>
 
             <TextView
                 android:id="@+id/after_task_go_main"
@@ -162,4 +208,5 @@
         </LinearLayout>
     </ScrollView>
 
-</RelativeLayout>
+    </FrameLayout>
+</ScrollView>

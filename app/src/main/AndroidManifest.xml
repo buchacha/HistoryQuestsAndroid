@@ -62,7 +62,7 @@
                 android:theme="@style/AppTheme"/>
         </activity>
         <activity
-            android:name=".RoundInfo"
+            android:name=".RoundInfoActivity"
             android:screenOrientation="portrait"
             android:parentActivityName=".MainActivity" >
             <!-- Parent activity meta-data to support 4.0 and lower -->

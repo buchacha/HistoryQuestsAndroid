@@ -35,6 +35,28 @@
                 android:textColor="@android:color/black"
                 android:text="Вопрос на засыпку." />
 
+        <ImageView
+            android:id="@+id/imgView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scaleType="centerCrop"
+            android:visibility="gone"/>
+
+        <com.google.android.youtube.player.YouTubePlayerView
+            android:id="@+id/youtubeView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone">
+
+        </com.google.android.youtube.player.YouTubePlayerView>
+        <Button
+            android:id="@+id/btnPlay"
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Воспроизвести"
+            android:visibility="gone"/>
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="1dp"
@@ -246,7 +268,27 @@
                 android:layout_marginBottom="22dp"
                 android:text="Молодец!" />
 
+            <ImageView
+                android:id="@+id/imgViewAfter"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scaleType="centerCrop"
+                android:visibility="gone"/>
 
+            <com.google.android.youtube.player.YouTubePlayerView
+                android:id="@+id/youtubeViewAfter"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone">
+
+            </com.google.android.youtube.player.YouTubePlayerView>
+            <Button
+                android:id="@+id/btnPlayAfter"
+                android:layout_gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Воспроизвести"
+                android:visibility="gone"/>
             <TextView
                 android:id="@+id/after_task_go_main"
                 android:layout_width="wrap_content"

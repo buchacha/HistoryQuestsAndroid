@@ -3,12 +3,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     >
-    <RelativeLayout
-
-        xmlns:tools="http://schemas.android.com/tools"
+    <FrameLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="8dp" >
+        android:layout_height="match_parent" >
 
         <LinearLayout
             android:id="@+id/info_quest_activity"
@@ -32,10 +30,18 @@
                 android:textColor="@android:color/black"
                 android:text="Университет - прежде всего это универсанты. Как ты думаешь, кто такой универсант? Какими чертами он должен обладать?" />
 
-            <com.google.android.youtube.player.YouTubePlayerView
-                android:id="@+id/youtubePlayView"
+            <ImageView
+                android:id="@+id/imgView"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:scaleType="centerCrop"
+                android:visibility="gone"/>
+
+            <com.google.android.youtube.player.YouTubePlayerView
+                android:id="@+id/youtubeView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone">
 
             </com.google.android.youtube.player.YouTubePlayerView>
 
@@ -45,7 +51,8 @@
                 android:layout_gravity="center"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Воспроизвести" />
+                android:text="Воспроизвести"
+                android:visibility="gone"/>
 
             <TextView
                 android:id="@+id/go_to_task"
@@ -71,5 +78,5 @@
             android:layout_centerInParent="true"
             android:visibility="gone"
             />
-    </RelativeLayout>
+    </FrameLayout>
 </ScrollView>

@@ -7,20 +7,24 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NavUtils;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
-import android.widget.RadioGroup;
-import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class LinkVariantsActivity extends AppCompatActivity {
+import com.google.android.youtube.player.YouTubeBaseActivity;
+import com.google.android.youtube.player.YouTubeInitializationResult;
+import com.google.android.youtube.player.YouTubePlayer;
+import com.google.android.youtube.player.YouTubePlayerView;
+
+public class LinkVariantsActivity extends YouTubeBaseActivity {
 
     private String currentAnswerState = "";
     private int currentRoundIdx;
@@ -32,6 +36,17 @@ public class LinkVariantsActivity extends AppCompatActivity {
     private LinearLayout taskLayout;
     private TextView title;
     private TextView question;
+
+    private ImageView imageView;
+    private ImageView imageViewAfter;
+
+    private YouTubePlayerView youTubePlayerView;
+    private Button btnPlay;
+    private YouTubePlayer.OnInitializedListener onInitializedListener;
+
+    private YouTubePlayerView youTubePlayerViewAfter;
+    private Button btnPlayAfter;
+    private YouTubePlayer.OnInitializedListener onInitializedListenerAfter;
 
     private TextView checkAnswer;
     private TextView resetAnswer;
@@ -119,6 +134,60 @@ public class LinkVariantsActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 goNextRound();
+            }
+        });
+
+        onInitializedListener = new YouTubePlayer.OnInitializedListener() {
+            @Override
+            public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean b) {
+                youTubePlayer.setPlayerStyle(YouTubePlayer.PlayerStyle.MINIMAL);
+                int curRoundIdx = questMetaData.lastRoundNum + 1;
+                Quest quest = TemporaryQuests.questsHashMap.get(questMetaData.questId);
+                Round curRound = quest.getRounds()[curRoundIdx];
+                if (curRound.getSourceType().equals(TemporaryQuests.VIDEO_TYPE)) {
+                    String currentUrl = curRound.getYoutubeLink();
+                    youTubePlayer.loadVideo(currentUrl);
+                }
+
+            }
+
+            @Override
+            public void onInitializationFailure(YouTubePlayer.Provider provider, YouTubeInitializationResult youTubeInitializationResult) {
+
+            }
+        };
+
+        btnPlay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                youTubePlayerView.initialize(YouTubeConf.getApiKey(), onInitializedListener);
+            }
+        });
+
+        onInitializedListenerAfter = new YouTubePlayer.OnInitializedListener() {
+            @Override
+            public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean b) {
+                youTubePlayer.setPlayerStyle(YouTubePlayer.PlayerStyle.MINIMAL);
+                int curRoundIdx = questMetaData.lastRoundNum + 1;
+                Quest quest = TemporaryQuests.questsHashMap.get(questMetaData.questId);
+                Round curRound = quest.getRounds()[curRoundIdx];
+                if (curRound.getAfterAnswer().getSourceType().equals(TemporaryQuests.VIDEO_TYPE)) {
+                    String currentUrl = curRound.getAfterAnswer().getYoutubeLink();
+                    youTubePlayer.loadVideo(currentUrl);
+                }
+
+            }
+
+            @Override
+            public void onInitializationFailure(YouTubePlayer.Provider provider, YouTubeInitializationResult youTubeInitializationResult) {
+
+            }
+        };
+
+        btnPlayAfter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                youTubePlayerViewAfter.initialize(YouTubeConf.getApiKey(), onInitializedListenerAfter);
             }
         });
 
@@ -210,6 +279,8 @@ public class LinkVariantsActivity extends AppCompatActivity {
 
     private void setAfterTaskRight() {
         afterTaskText.setText(currentRound.getAfterAnswer().getTextIfRight());
+        imageViewAfterSet();
+        videoViewAfterSet();
 
     }
 
@@ -230,6 +301,9 @@ public class LinkVariantsActivity extends AppCompatActivity {
         int numOfVariants = currentRound.getCountVariants();
         setupVariants(numOfVariants);
         setupAnswers(numOfVariants);
+
+        imageViewSet();
+        videoViewSet();
     }
     private void setupVariants(int numOfVariants) {
         answersLayout.removeAllViews();
@@ -358,6 +432,14 @@ public class LinkVariantsActivity extends AppCompatActivity {
         answerIds[4] = answer5.getId();
         answer6 = (TextView) findViewById(R.id.answer6);
         answerIds[5] = answer6.getId();
+
+        imageView = findViewById(R.id.imgView);
+        youTubePlayerView = findViewById(R.id.youtubeView);
+        btnPlay = findViewById(R.id.btnPlay);
+
+        imageViewAfter = findViewById(R.id.imgViewAfter);
+        youTubePlayerViewAfter = findViewById(R.id.youtubeViewAfter);
+        btnPlayAfter = findViewById(R.id.btnPlayAfter);
     }
     private void setUnClickable(View view) {
         if (view != null) {
@@ -402,6 +484,52 @@ public class LinkVariantsActivity extends AppCompatActivity {
         // Create and show the AlertDialog
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
+    }
+
+    private void imageViewSet() {
+        int roundIdx = questMetaData.lastRoundNum + 1;
+        Quest currentQuest = TemporaryQuests.questsHashMap.get(questMetaData.questId);
+        Round currentRound = currentQuest.getRounds()[roundIdx];
+        if (!currentRound.getSourceType().equals(TemporaryQuests.EMPTY_TASK_TYPE) && currentRound.getSourceType().equals(TemporaryQuests.IMAGE_TYPE)) {
+            imageView.setVisibility(View.VISIBLE);
+            imageView.setImageResource(currentRound.getImgResourceId());
+
+        }
+
+    }
+
+    private void videoViewSet() {
+        int roundIdx = questMetaData.lastRoundNum + 1;
+        Quest currentQuest = TemporaryQuests.questsHashMap.get(questMetaData.questId);
+        Round currentRound = currentQuest.getRounds()[roundIdx];
+        if (!currentRound.getSourceType().equals(TemporaryQuests.EMPTY_TASK_TYPE) && currentRound.getSourceType().equals(TemporaryQuests.VIDEO_TYPE)) {
+            youTubePlayerView.setVisibility(View.VISIBLE);
+            btnPlay.setVisibility(View.VISIBLE);
+
+        }
+    }
+
+    private void imageViewAfterSet() {
+        int roundIdx = questMetaData.lastRoundNum + 1;
+        Quest currentQuest = TemporaryQuests.questsHashMap.get(questMetaData.questId);
+        Round currentRound = currentQuest.getRounds()[roundIdx];
+        if (!currentRound.getAfterAnswer().getSourceType().equals(TemporaryQuests.EMPTY_TASK_TYPE) && currentRound.getAfterAnswer().getSourceType().equals(TemporaryQuests.IMAGE_TYPE)) {
+            imageViewAfter.setVisibility(View.VISIBLE);
+            imageViewAfter.setImageResource(currentRound.getImgResourceId());
+
+        }
+
+    }
+
+    private void videoViewAfterSet() {
+        int roundIdx = questMetaData.lastRoundNum + 1;
+        Quest currentQuest = TemporaryQuests.questsHashMap.get(questMetaData.questId);
+        Round currentRound = currentQuest.getRounds()[roundIdx];
+        if (currentRound.getAfterAnswer().getSourceType().equals(TemporaryQuests.VIDEO_TYPE)) {
+            youTubePlayerViewAfter.setVisibility(View.VISIBLE);
+            btnPlayAfter.setVisibility(View.VISIBLE);
+
+        }
     }
 
 }

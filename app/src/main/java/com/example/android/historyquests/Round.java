@@ -7,28 +7,38 @@ public class Round {
     private String[] variants;
     private String[] questionVariants;
     private String sourceType;
-    private String sourceLink;
+    private String youtubeLink;
+    private int imgResourceId;
     private String answer;
     private String questionType;
-    private String additionalInfo;
+    private RoundInfo roundInfo;
     private String name;
     private AfterAnswer afterAnswer;
+    private RouteInfo routeInfo;
+    private boolean isQr;
+    private boolean isRoute;
+    private boolean addInfo;
 
-    public Round(int roundNum, String name, String additionalInfo, String questionType, String question, int countVariants,
-                 String[] variants, String[] questionVariants, String answer, String sourceType, String sourceLink,
-                 AfterAnswer afterAnswer) {
+    public Round(int roundNum, String name, RoundInfo roundInfo, String questionType, String question, int countVariants,
+                 String[] variants, String[] questionVariants, String answer, String sourceType, String youtubeLink, int imgResourceId,
+                 AfterAnswer afterAnswer, RouteInfo routeInfo, boolean isQr, boolean isRoute, boolean addInfo) {
         this.roundNum = roundNum;
         this.question = question;
         this.countVariants = countVariants;
         this.variants = variants;
         this.questionVariants = questionVariants;
         this.sourceType = sourceType;
-        this.sourceLink = sourceLink;
+        this.youtubeLink = youtubeLink;
+        this.imgResourceId = imgResourceId;
         this.answer = answer;
         this.questionType = questionType;
-        this.additionalInfo = additionalInfo;
+        this.roundInfo = roundInfo;
         this.name = name;
         this.afterAnswer = afterAnswer;
+        this.routeInfo = routeInfo;
+        this.isQr = isQr;
+        this.isRoute = isRoute;
+        this.addInfo = addInfo;
     }
 
     public int getRoundNum() {
@@ -51,10 +61,12 @@ public class Round {
         return sourceType;
     }
 
-    public String getSourceLink() {
-        return sourceLink;
+    public String getYoutubeLink() {
+        return youtubeLink;
     }
-
+    public int getImgResourceId() {
+        return imgResourceId;
+    }
     public String getAnswer() {
         return answer;
     }
@@ -63,8 +75,8 @@ public class Round {
         return questionType;
     }
 
-    public String getAdditionalInfo() {
-        return additionalInfo;
+    public RoundInfo getAdditionalInfo() {
+        return roundInfo;
     }
 
     public String getName() {
@@ -77,5 +89,25 @@ public class Round {
 
     public AfterAnswer getAfterAnswer() {
         return afterAnswer;
+    }
+
+    public RouteInfo getRouteInfo() {
+        return routeInfo;
+    }
+
+    public RoundInfo getRoundInfo() {
+        return roundInfo;
+    }
+
+    public boolean isQr() {
+        return isQr;
+    }
+
+    public boolean isRoute() {
+        return isRoute;
+    }
+
+    public boolean isAddInfo() {
+        return addInfo;
     }
 }

@@ -1,26 +1,21 @@
 package com.example.android.historyquests;
 
-public class AfterAnswer {
-    private String textIfRight;
-    private String textIfWrong;
+public class RouteInfo {
+
+    private String info;
     private String sourceType;
     private String youtubeLink;
     private int imgResourceId;
 
-    public AfterAnswer(String textIfRight, String textIfWrong, String sourceType, String youtubeLink, int imgResourceId) {
-        this.textIfRight = textIfRight;
-        this.textIfWrong = textIfWrong;
+    public RouteInfo(String info, String sourceType, String youtubeLink, int imgResourceId) {
+        this.info = info;
         this.sourceType = sourceType;
         this.youtubeLink = youtubeLink;
         this.imgResourceId = imgResourceId;
     }
 
-    public String getTextIfRight() {
-        return textIfRight;
-    }
-
-    public String getTextIfWrong() {
-        return textIfWrong;
+    public String getInfo() {
+        return info;
     }
 
     public String getSourceType() {
