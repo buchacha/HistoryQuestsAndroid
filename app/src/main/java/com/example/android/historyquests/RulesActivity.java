@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -64,6 +65,11 @@ public class RulesActivity extends AppCompatActivity {
                             break;
                         case TemporaryQuests.LINK_VARIANTS_TASK_TYPE:
                             goNextRound = new Intent(RulesActivity.this, LinkVariantsActivity.class);
+                            goNextRound.putExtra("META_DATA", questMetaData);
+                            startActivity(goNextRound);
+                            break;
+                        case TemporaryQuests.EDIT_TEXT_TASK_TYPE:
+                            goNextRound = new Intent(getApplicationContext(), EditTextActivity.class);
                             goNextRound.putExtra("META_DATA", questMetaData);
                             startActivity(goNextRound);
                             break;

@@ -27,6 +27,7 @@ public class CheckBoxActivity extends YouTubeBaseActivity {
     private QuestMetaData questMetaData;
     private Round currentRound;
 
+    private ScrollView mainScrollView;
     private LinearLayout taskLayout;
     private TextView title;
     private TextView question;
@@ -110,8 +111,19 @@ public class CheckBoxActivity extends YouTubeBaseActivity {
         afterTaskGoMain.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = NavUtils.getParentActivityIntent(CheckBoxActivity.this);
-                startActivity(i);
+                DialogInterface.OnClickListener discardButtonClickListener =
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                // User clicked "Discard" button, close the current activity.
+                                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                startActivity(intent);
+                            }
+                        };
+
+                // Show dialog that there are unsaved changes
+                showUnsavedChangesDialog(discardButtonClickListener);
             }
         });
 
@@ -222,12 +234,11 @@ public class CheckBoxActivity extends YouTubeBaseActivity {
         iWasHere = true;
         int nextRoundIdx = questMetaData.lastRoundNum + 2;
         Quest currentQuest = TemporaryQuests.questsHashMap.get(questMetaData.questId);
-        Round nextRound = currentQuest.getRounds()[nextRoundIdx];
+
 
         if (nextRoundIdx == currentQuest.getCountRounds()) {
-            Toast.makeText(getApplicationContext(), "Вы завершили квест полностью. С победой!", Toast.LENGTH_LONG).show();
-            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+            Intent intent = new Intent(getApplicationContext(), WinActivity.class);
             startActivity(intent);
             return;
         }
@@ -236,7 +247,7 @@ public class CheckBoxActivity extends YouTubeBaseActivity {
             goNextRound.putExtra("META_DATA", questMetaData);
             startActivity(goNextRound);
         } else {
-
+            Round nextRound = currentQuest.getRounds()[nextRoundIdx];
             questMetaData.lastRoundNum++;
 
             if (nextRound.isRoute()) {
@@ -269,6 +280,17 @@ public class CheckBoxActivity extends YouTubeBaseActivity {
                         goNextRound.putExtra("META_DATA", questMetaData);
                         startActivity(goNextRound);
                         break;
+                    case TemporaryQuests.EMPTY_TASK_TYPE:
+                        goNextRound = new Intent(CheckBoxActivity.this, AdvertActivity.class);
+                        goNextRound.putExtra("META_DATA", questMetaData);
+                        startActivity(goNextRound);
+                        break;
+                    case TemporaryQuests.EDIT_TEXT_TASK_TYPE:
+                        goNextRound = new Intent(getApplicationContext(), EditTextActivity.class);
+                        goNextRound.putExtra("META_DATA", questMetaData);
+                        startActivity(goNextRound);
+                        break;
+
                     default:
                         Toast.makeText(getApplicationContext(), "Данный тип вопроса в разработке", Toast.LENGTH_LONG).show();
                 }
@@ -316,6 +338,7 @@ public class CheckBoxActivity extends YouTubeBaseActivity {
         setUnClickable(taskLayout);
         darkerView.setVisibility(View.VISIBLE);
         afterTaskScrollView.setVisibility(View.VISIBLE);
+        mainScrollView.scrollTo(0, 0);
         if (isRight)
             setAfterTaskRight();
         else
@@ -338,7 +361,7 @@ public class CheckBoxActivity extends YouTubeBaseActivity {
     }
     private void setViews() {
         int roundIdx = questMetaData.lastRoundNum+1;
-        title.setText("Станция " + Integer.toString(roundIdx+1) + ". " + currentRound.getName());
+        title.setText(currentRound.getName());
         question.setText(currentRound.getQuestion());
         initCheckGroup();
         setupCheckGroup();
@@ -391,6 +414,7 @@ public class CheckBoxActivity extends YouTubeBaseActivity {
     }
 
     private void initViews() {
+        mainScrollView = findViewById(R.id.main_scroll_view);
         taskLayout = findViewById(R.id.task_layout);
         title = findViewById(R.id.task_title);
         question = findViewById(R.id.task_question);

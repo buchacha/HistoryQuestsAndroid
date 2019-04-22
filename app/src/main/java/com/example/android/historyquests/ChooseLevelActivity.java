@@ -12,6 +12,8 @@ public class ChooseLevelActivity extends AppCompatActivity {
     private Button btnNew;
     private Button btnBeginner;
     private Button btnHistorian;
+    private Button btnTest;
+
     private QuestMetaData questMetaData;
 
     @Override
@@ -22,6 +24,7 @@ public class ChooseLevelActivity extends AppCompatActivity {
         btnBeginner =(Button) findViewById(R.id.button_beginner);
         btnNew =(Button) findViewById(R.id.button_new_player);
         btnHistorian =(Button) findViewById(R.id.button_historian);
+        btnTest = findViewById(R.id.button_test);
 
         btnNew.setOnClickListener(new View.OnClickListener() {  // TODO: add level as string-int map
             @Override
@@ -64,6 +67,21 @@ public class ChooseLevelActivity extends AppCompatActivity {
 
             }
         });
+
+        btnTest.setOnClickListener(new View.OnClickListener() { // TODO: add level as string-int map
+            @Override
+            public void onClick(View v) {
+
+                questMetaData = new QuestMetaData("0", -1,false, 0, null);
+                questMetaData.level = 4;
+
+                Intent goToChooseQuestIntent = new Intent(ChooseLevelActivity.this, ChooseQuestActivity.class);
+                goToChooseQuestIntent.putExtra("META_DATA", questMetaData);
+                startActivity(goToChooseQuestIntent);
+
+            }
+        });
+
 
     }
 }

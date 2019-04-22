@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/main_scroll_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true">
@@ -35,9 +36,9 @@
 
         <ImageView
             android:id="@+id/imgView"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:scaleType="centerCrop"
+            android:scaleType="centerInside"
             android:visibility="gone"/>
 
         <com.google.android.youtube.player.YouTubePlayerView
@@ -150,9 +151,9 @@
 
             <ImageView
                 android:id="@+id/imgViewAfter"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:scaleType="centerCrop"
+                android:scaleType="centerInside"
                 android:visibility="gone"/>
 
             <com.google.android.youtube.player.YouTubePlayerView

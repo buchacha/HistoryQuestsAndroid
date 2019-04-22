@@ -3,7 +3,6 @@ package com.example.android.historyquests;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NavUtils;
@@ -12,9 +11,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.LinearLayout.LayoutParams;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,11 +24,9 @@ import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerView;
 
-public class LinkVariantsActivity extends YouTubeBaseActivity {
+public class EditTextActivity extends YouTubeBaseActivity {
 
-    private String currentAnswerState = "";
-    private int currentRoundIdx;
-
+    private String LOG_TAG = EditTextActivity.class.getSimpleName();
     private QuestMetaData questMetaData;
     private Round currentRound;
 
@@ -36,7 +34,7 @@ public class LinkVariantsActivity extends YouTubeBaseActivity {
     private LinearLayout taskLayout;
     private TextView title;
     private TextView question;
-
+    private EditText editText;
     private ImageView imageView;
     private ImageView imageViewAfter;
 
@@ -49,7 +47,6 @@ public class LinkVariantsActivity extends YouTubeBaseActivity {
     private YouTubePlayer.OnInitializedListener onInitializedListenerAfter;
 
     private TextView checkAnswer;
-    private TextView resetAnswer;
     private TextView getHint;
 
     private TextView darkerView;
@@ -60,71 +57,40 @@ public class LinkVariantsActivity extends YouTubeBaseActivity {
     private TextView afterTaskGoNext;
     private TextView afterTaskRepeat;
 
-    private LinearLayout variantsLayout;
-    private LinearLayout answersLayout;
-
-    private TextView answer1;
-    private TextView answer2;
-    private TextView answer3;
-    private TextView answer4;
-    private TextView answer5;
-    private TextView answer6;
-
-    private int[] answerIds = new int[6];
-
     private boolean iWasHere;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_task_link_variants);
+        setContentView(R.layout.activity_task_edit_text);
 
         iWasHere = false;
         Intent intent = getIntent();
         questMetaData = (QuestMetaData) intent.getExtras().getSerializable("META_DATA");
 
-        currentRoundIdx = questMetaData.lastRoundNum+1;
-        currentRound = TemporaryQuests.questsHashMap.get(questMetaData.questId).getRounds()[currentRoundIdx];
-
         initViews();
-        setupViews();
-        setListeners();
+        setCurrentRound();
+        setViews();
 
 
-        getHint.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (currentRound.isHint()) {
-                    Toast.makeText(getApplicationContext(), "Здесь будет подсказка по QR-коду", Toast.LENGTH_SHORT).show();
-//                    Intent goHint = new Intent(LinkVariantsActivity.this, RoundInfoActivity.class);
-//                    goNextRound.putExtra("META_DATA", questMetaData);
-//                    startActivity(goNextRound);
-                } else {
-                    Toast.makeText(getApplicationContext(), "Для этого вопроса подсказок нет", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-
-        resetAnswer.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                currentAnswerState = "";
-                int numOfVariants = currentRound.getCountVariants();
-                answersLayout.removeAllViews();
-                setupAnswers(numOfVariants);
-            }
-        });
 
         checkAnswer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                String currentAnswer = retrieveAnswer();
+                String[] rightAnswers = retrieveRightAnswer();
 
-                String rightAnswer = currentRound.getAnswer();
-                if (rightAnswer.equals(currentAnswerState)){
+                if (currentAnswer.equals("")) {
+                    Toast.makeText(getApplicationContext(), "Введите Ваш ответ", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if (isRightAnswer(currentAnswer, rightAnswers)) {
                     showAfterTask(true);
                 } else {
                     showAfterTask(false);
                 }
+
             }
         });
 
@@ -215,19 +181,6 @@ public class LinkVariantsActivity extends YouTubeBaseActivity {
                 youTubePlayerViewAfter.initialize(YouTubeConf.getApiKey(), onInitializedListenerAfter);
             }
         });
-
-    }
-
-    @Override
-    public void onResume()
-    {  // After a pause OR at startup
-        super.onResume();
-        if (iWasHere)
-            questMetaData.lastRoundNum--;
-        setClickable(taskLayout);
-        darkerView.setVisibility(View.GONE);
-        afterTaskScrollView.setVisibility(View.GONE);
-
     }
 
     @Override
@@ -276,49 +229,52 @@ public class LinkVariantsActivity extends YouTubeBaseActivity {
         int nextRoundIdx = questMetaData.lastRoundNum + 2;
         Quest currentQuest = TemporaryQuests.questsHashMap.get(questMetaData.questId);
 
+
         if (nextRoundIdx == currentQuest.getCountRounds()) {
             Intent intent = new Intent(getApplicationContext(), WinActivity.class);
             startActivity(intent);
             return;
         }
         if (currentQuest == null) {
-            Intent goNextRound = new Intent(LinkVariantsActivity.this, RoundInfoActivity.class);
+            Intent goNextRound = new Intent(EditTextActivity.this, RoundInfoActivity.class);
             goNextRound.putExtra("META_DATA", questMetaData);
             startActivity(goNextRound);
         } else {
             Round nextRound = currentQuest.getRounds()[nextRoundIdx];
             questMetaData.lastRoundNum++;
+
             if (nextRound.isRoute()) {
-                Intent goRoute = new Intent(LinkVariantsActivity.this, WhileGoingQr.class);
+                Intent goRoute = new Intent(EditTextActivity.this, WhileGoingQr.class);
                 goRoute.putExtra("META_DATA", questMetaData);
                 startActivity(goRoute);
             } else if (nextRound.isQr()) {
-                Intent goQr = new Intent(LinkVariantsActivity.this, QrReadActivity.class);
+                Intent goQr = new Intent(EditTextActivity.this, QrReadActivity.class);
                 goQr.putExtra("META_DATA", questMetaData);
                 startActivity(goQr);
-            } else if (nextRound.isAddInfo()) {
-                Intent goToQuest = new Intent(LinkVariantsActivity.this, RoundInfoActivity.class);
+            }
+            else if (nextRound.isAddInfo()){
+                Intent goToQuest = new Intent(EditTextActivity.this, RoundInfoActivity.class);
                 goToQuest.putExtra("META_DATA", questMetaData);
                 startActivity(goToQuest);
             } else {
                 switch (nextRound.getQuestionType()) {
                     case TemporaryQuests.RADIO_BUTTON_TASK_TYPE:
-                        Intent goNextRound = new Intent(LinkVariantsActivity.this, RadioButtonActivity.class);
+                        Intent goNextRound = new Intent(EditTextActivity.this, RadioButtonActivity.class);
                         goNextRound.putExtra("META_DATA", questMetaData);
                         startActivity(goNextRound);
                         break;
                     case TemporaryQuests.CHECK_BOX_TASK_TYPE:
-                        goNextRound = new Intent(LinkVariantsActivity.this, CheckBoxActivity.class);
+                        goNextRound = new Intent(EditTextActivity.this, CheckBoxActivity.class);
                         goNextRound.putExtra("META_DATA", questMetaData);
                         startActivity(goNextRound);
                         break;
                     case TemporaryQuests.LINK_VARIANTS_TASK_TYPE:
-                        goNextRound = new Intent(LinkVariantsActivity.this, LinkVariantsActivity.class);
+                        goNextRound = new Intent(EditTextActivity.this, LinkVariantsActivity.class);
                         goNextRound.putExtra("META_DATA", questMetaData);
                         startActivity(goNextRound);
                         break;
                     case TemporaryQuests.EMPTY_TASK_TYPE:
-                        goNextRound = new Intent(LinkVariantsActivity.this, AdvertActivity.class);
+                        goNextRound = new Intent(EditTextActivity.this, AdvertActivity.class);
                         goNextRound.putExtra("META_DATA", questMetaData);
                         startActivity(goNextRound);
                         break;
@@ -328,13 +284,47 @@ public class LinkVariantsActivity extends YouTubeBaseActivity {
                         startActivity(goNextRound);
                         break;
 
-
                     default:
                         Toast.makeText(getApplicationContext(), "Данный тип вопроса в разработке", Toast.LENGTH_LONG).show();
                 }
             }
         }
 
+    }
+
+    @Override
+    public void onResume()
+    {  // After a pause OR at startup
+        super.onResume();
+        if (iWasHere)
+            questMetaData.lastRoundNum--;
+        setClickable(taskLayout);
+        darkerView.setVisibility(View.GONE);
+        afterTaskScrollView.setVisibility(View.GONE);
+
+    }
+
+    private void setUnClickable(View view) {
+        if (view != null) {
+            view.setClickable(false);
+            if (view instanceof ViewGroup) {
+                ViewGroup vg = ((ViewGroup) view);
+                for (int i = 0; i < vg.getChildCount(); i++) {
+                    setUnClickable(vg.getChildAt(i));
+                }
+            }
+        }
+    }
+    private void setClickable(View view) {
+        if (view != null) {
+            view.setClickable(true);
+            if (view instanceof ViewGroup) {
+                ViewGroup vg = ((ViewGroup) view);
+                for (int i = 0; i < vg.getChildCount(); i++) {
+                    setClickable(vg.getChildAt(i));
+                }
+            }
+        }
     }
 
     private void showAfterTask(boolean isRight) {
@@ -362,123 +352,55 @@ public class LinkVariantsActivity extends YouTubeBaseActivity {
 
 
     }
-
-    private void setupViews() {
+    private void setViews() {
+        int roundIdx = questMetaData.lastRoundNum+1;
         title.setText(currentRound.getName());
         question.setText(currentRound.getQuestion());
-
-        int currentRoundIdx = questMetaData.lastRoundNum+1;
-
-        int numOfVariants = currentRound.getCountVariants();
-        setupVariants(numOfVariants);
-        setupAnswers(numOfVariants);
-
         imageViewSet();
         videoViewSet();
     }
-    private void setupVariants(int numOfVariants) {
-        answersLayout.removeAllViews();
-        variantsLayout.removeAllViews();
-        String[] variants = currentRound.getQuestionVariants();
-        for (int i = 0; i < numOfVariants; i++) {
-            TextView variantView = new TextView (getApplicationContext());
-            variantView.setText(variants[i]);
-            variantView.setTextColor(Color.GRAY);
-            variantView.setTextSize(18);
-            LayoutParams lp = new LayoutParams(LayoutParams.MATCH_PARENT, 200 );
-            variantView.setLayoutParams(lp);
-            variantView.setPadding(11,11,11,11);
-            variantsLayout.addView(variantView);
+
+
+    private String retrieveAnswer() {
+        String userAnswer = editText.getText().toString().trim().toLowerCase();
+        userAnswer = userAnswer.replace(".","").replace(",","").trim();
+        Log.e(LOG_TAG, "Retrieved from user: " + userAnswer);
+        return userAnswer;
+    }
+    private String[] retrieveRightAnswer() {
+        String rightAnswerInString = currentRound.getAnswer();
+        String[] rightAnswers = rightAnswerInString.split("_x_");
+        for (int i = 0; i < rightAnswers.length; i++ ) {
+            rightAnswers[i] = rightAnswers[i].trim().toLowerCase();
+            rightAnswers[i] = rightAnswers[i].replace(".","").replace(",","").trim();
+            Log.e(LOG_TAG, "Retrieved: " + rightAnswers[i]);
         }
+        return rightAnswers;
     }
 
-    private void setupAnswers(int numOfAnswers) {
-        String[] answers = currentRound.getVariants();
-        for (int i = 0; i<numOfAnswers; i++) {
-            TextView answerView = findViewById(answerIds[i]);
-            answerView.setText(answers[i]);
-            answerView.setVisibility(View.VISIBLE);
+    private boolean isRightAnswer(String currentAnswer, String[] rightAnswers) {
+        for (int i = 0; i < rightAnswers.length; i++) {
+            if (currentAnswer.equals(rightAnswers[i]))
+                return true;
         }
-
-        for (int i = numOfAnswers; i<answers.length; i++) {
-            TextView answerView = findViewById(answerIds[i]);
-            answerView.setVisibility(View.GONE);
-        }
-    }
-
-    private void setListeners() {
-        answer1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                addToAnswersLayout(0);
-                answer1.setVisibility(View.GONE);
-            }
-        });
-
-        answer2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                addToAnswersLayout(1);
-                answer2.setVisibility(View.GONE);
-            }
-        });
-
-        answer3.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                addToAnswersLayout(2);
-                answer3.setVisibility(View.GONE);
-            }
-        });
-
-        answer4.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                addToAnswersLayout(3);
-                answer4.setVisibility(View.GONE);
-            }
-        });
-
-        answer5.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                addToAnswersLayout(4);
-                answer5.setVisibility(View.GONE);
-            }
-        });
-
-        answer6.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                addToAnswersLayout(5);
-                answer6.setVisibility(View.GONE);
-            }
-        });
+        return false;
 
 
     }
 
-    private  void addToAnswersLayout(int idx) {
-        String[] answers = currentRound.getVariants();
-        TextView answerView = new TextView(getApplicationContext());
-        answerView.setText(answers[idx]);
-        answerView.setTextColor(Color.DKGRAY);
-        answerView.setTextSize(18);
-        answerView.setPadding(11,11,11,11);
-        LayoutParams lp = new LayoutParams(LayoutParams.MATCH_PARENT, 200);
-        answerView.setLayoutParams(lp);
-        answersLayout.addView(answerView);
-        currentAnswerState += Integer.toString(idx+1);
-        Log.e("FROM HERE 3", currentAnswerState);
+    private void setCurrentRound() {
+        int roundIdx = questMetaData.lastRoundNum+1;
+        currentRound = TemporaryQuests.questsHashMap.get(questMetaData.questId).getRounds()[roundIdx];
     }
+
     private void initViews() {
         mainScrollView = findViewById(R.id.main_scroll_view);
         taskLayout = findViewById(R.id.task_layout);
         title = findViewById(R.id.task_title);
         question = findViewById(R.id.task_question);
+        editText = findViewById(R.id.editTextAnswer);
         checkAnswer = findViewById(R.id.check_answer);
         getHint = findViewById(R.id.get_hint);
-        resetAnswer = findViewById(R.id.reset_answer);
 
         darkerView = findViewById(R.id.darker_view);
         afterTaskLayout = findViewById(R.id.after_task_layout);
@@ -488,22 +410,6 @@ public class LinkVariantsActivity extends YouTubeBaseActivity {
         afterTaskGoNext = findViewById(R.id.after_task_go_next);
         afterTaskRepeat = findViewById(R.id.after_task_repeat);
 
-        variantsLayout = (LinearLayout) findViewById(R.id.variants_layout);
-        answersLayout = (LinearLayout) findViewById(R.id.answers_layout);
-
-        answer1 = (TextView) findViewById(R.id.answer1);
-        answerIds[0] = answer1.getId();
-        answer2 = (TextView) findViewById(R.id.answer2);
-        answerIds[1] = answer2.getId();
-        answer3 = (TextView) findViewById(R.id.answer3);
-        answerIds[2] = answer3.getId();
-        answer4 = (TextView) findViewById(R.id.answer4);
-        answerIds[3] = answer4.getId();
-        answer5 = (TextView) findViewById(R.id.answer5);
-        answerIds[4] = answer5.getId();
-        answer6 = (TextView) findViewById(R.id.answer6);
-        answerIds[5] = answer6.getId();
-
         imageView = findViewById(R.id.imgView);
         youTubePlayerView = findViewById(R.id.youtubeView);
         btnPlay = findViewById(R.id.btnPlay);
@@ -511,28 +417,6 @@ public class LinkVariantsActivity extends YouTubeBaseActivity {
         imageViewAfter = findViewById(R.id.imgViewAfter);
         youTubePlayerViewAfter = findViewById(R.id.youtubeViewAfter);
         btnPlayAfter = findViewById(R.id.btnPlayAfter);
-    }
-    private void setUnClickable(View view) {
-        if (view != null) {
-            view.setClickable(false);
-            if (view instanceof ViewGroup) {
-                ViewGroup vg = ((ViewGroup) view);
-                for (int i = 0; i < vg.getChildCount(); i++) {
-                    setUnClickable(vg.getChildAt(i));
-                }
-            }
-        }
-    }
-    private void setClickable(View view) {
-        if (view != null) {
-            view.setClickable(true);
-            if (view instanceof ViewGroup) {
-                ViewGroup vg = ((ViewGroup) view);
-                for (int i = 0; i < vg.getChildCount(); i++) {
-                    setClickable(vg.getChildAt(i));
-                }
-            }
-        }
     }
 
     private void showUnsavedChangesDialog(
@@ -596,11 +480,10 @@ public class LinkVariantsActivity extends YouTubeBaseActivity {
         int roundIdx = questMetaData.lastRoundNum + 1;
         Quest currentQuest = TemporaryQuests.questsHashMap.get(questMetaData.questId);
         Round currentRound = currentQuest.getRounds()[roundIdx];
-        if (currentRound.getAfterAnswer().getSourceType().equals(TemporaryQuests.VIDEO_TYPE)) {
+        if (!currentRound.getAfterAnswer().getSourceType().equals(TemporaryQuests.EMPTY_TASK_TYPE) && currentRound.getAfterAnswer().getSourceType().equals(TemporaryQuests.VIDEO_TYPE)) {
             youTubePlayerViewAfter.setVisibility(View.VISIBLE);
             btnPlayAfter.setVisibility(View.VISIBLE);
 
         }
     }
-
 }

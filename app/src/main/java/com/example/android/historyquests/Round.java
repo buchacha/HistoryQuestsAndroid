@@ -18,10 +18,14 @@ public class Round {
     private boolean isQr;
     private boolean isRoute;
     private boolean addInfo;
+    private boolean isHint;
+    private boolean isAdvert;
+    private Advert ad;
+
 
     public Round(int roundNum, String name, RoundInfo roundInfo, String questionType, String question, int countVariants,
                  String[] variants, String[] questionVariants, String answer, String sourceType, String youtubeLink, int imgResourceId,
-                 AfterAnswer afterAnswer, RouteInfo routeInfo, boolean isQr, boolean isRoute, boolean addInfo) {
+                 AfterAnswer afterAnswer, RouteInfo routeInfo, Advert ad, boolean isQr, boolean isRoute, boolean addInfo, boolean isHint, boolean isAdvert) {
         this.roundNum = roundNum;
         this.question = question;
         this.countVariants = countVariants;
@@ -39,6 +43,9 @@ public class Round {
         this.isQr = isQr;
         this.isRoute = isRoute;
         this.addInfo = addInfo;
+        this.isHint = isHint;
+        this.isAdvert = isAdvert;
+        this.ad = ad;
     }
 
     public int getRoundNum() {
@@ -109,5 +116,17 @@ public class Round {
 
     public boolean isAddInfo() {
         return addInfo;
+    }
+
+    public boolean isHint() {
+        return isHint;
+    }
+
+    public boolean isAdvert() {
+        return isAdvert;
+    }
+
+    public Advert getAd() {
+        return ad;
     }
 }

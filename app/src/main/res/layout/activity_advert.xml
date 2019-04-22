@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_margin="11dp">
+
+        <TextView
+            android:id="@+id/advert_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="64dp"
+            android:textSize="22sp"
+            android:textAllCaps="true"
+            android:textColor="@android:color/black"
+            android:text="Университет " />
+
+        <TextView
+            android:id="@+id/advert_info"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="64dp"
+            android:textSize="18sp"
+            android:textColor="@android:color/black"
+            android:text="Университет - прежде всего это универсанты. Как ты думаешь, кто такой универсант? Какими чертами он должен обладать?" />
+
+        <ImageView
+            android:id="@+id/imgView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerInside"
+            android:visibility="gone"/>
+
+        <com.google.android.youtube.player.YouTubePlayerView
+            android:id="@+id/youtubeView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone">
+
+        </com.google.android.youtube.player.YouTubePlayerView>
+
+
+        <Button
+            android:id="@+id/btnPlay"
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Воспроизвести"
+            android:visibility="gone"/>
+
+        <Button
+            android:id="@+id/button_donate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Пожертвовать" />
+
+
+        <TextView
+            android:id="@+id/go_next"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Далее"
+            android:layout_marginTop="22dp"
+            android:paddingTop="18dp"
+            android:paddingBottom="18dp"
+            android:textSize="18sp"
+            android:textColor="@android:color/holo_orange_dark"
+            android:gravity="center_horizontal"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true"/>
+
+    </LinearLayout>
+
+
+</ScrollView>

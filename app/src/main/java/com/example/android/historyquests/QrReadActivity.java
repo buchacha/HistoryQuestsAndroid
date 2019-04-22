@@ -187,6 +187,16 @@ public class QrReadActivity extends AppCompatActivity {
                             goNextRound.putExtra("META_DATA", questMetaData);
                             startActivity(goNextRound);
                             break;
+                        case TemporaryQuests.EMPTY_TASK_TYPE:
+                            goNextRound = new Intent(getApplicationContext(), AdvertActivity.class);
+                            goNextRound.putExtra("META_DATA", questMetaData);
+                            startActivity(goNextRound);
+                            break;
+                        case TemporaryQuests.EDIT_TEXT_TASK_TYPE:
+                            goNextRound = new Intent(getApplicationContext(), EditTextActivity.class);
+                            goNextRound.putExtra("META_DATA", questMetaData);
+                            startActivity(goNextRound);
+                            break;
                         default:
                             Toast.makeText(getApplicationContext(), "Данный тип вопроса в разработке", Toast.LENGTH_LONG).show();
                     }

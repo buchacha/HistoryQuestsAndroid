@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NavUtils;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,9 +26,11 @@ import com.google.android.youtube.player.YouTubePlayerView;
 
 public class RadioButtonActivity extends YouTubeBaseActivity {
 
+    private String LOG_TAG = RadioButtonActivity.class.getSimpleName();
     private QuestMetaData questMetaData;
     private Round currentRound;
 
+    private ScrollView mainScrollView;
     private LinearLayout taskLayout;
     private TextView title;
     private TextView question;
@@ -101,8 +104,19 @@ public class RadioButtonActivity extends YouTubeBaseActivity {
         afterTaskGoMain.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = NavUtils.getParentActivityIntent(RadioButtonActivity.this);
-                startActivity(i);
+                DialogInterface.OnClickListener discardButtonClickListener =
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                // User clicked "Discard" button, close the current activity.
+                                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                startActivity(intent);
+                            }
+                        };
+
+                // Show dialog that there are unsaved changes
+                showUnsavedChangesDialog(discardButtonClickListener);
             }
         });
 
@@ -227,9 +241,7 @@ public class RadioButtonActivity extends YouTubeBaseActivity {
         Quest currentQuest = TemporaryQuests.questsHashMap.get(questMetaData.questId);
 
         if (nextRoundIdx == currentQuest.getCountRounds()) {
-            Toast.makeText(getApplicationContext(), "Вы завершили квест полностью. С победой!", Toast.LENGTH_LONG).show();
-            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            Intent intent = new Intent(getApplicationContext(), WinActivity.class);
             startActivity(intent);
             return;
         }
@@ -238,11 +250,52 @@ public class RadioButtonActivity extends YouTubeBaseActivity {
             goNextRound.putExtra("META_DATA", questMetaData);
             startActivity(goNextRound);
         } else {
-
+            Round nextRound = currentQuest.getRounds()[nextRoundIdx];
             questMetaData.lastRoundNum++;
-            Intent goToChooseQuestIntent = new Intent(RadioButtonActivity.this, WhileGoingQr.class);
-            goToChooseQuestIntent.putExtra("META_DATA", questMetaData);
-            startActivity(goToChooseQuestIntent);
+            if (nextRound.isRoute()) {
+                Intent goRoute = new Intent(RadioButtonActivity.this, WhileGoingQr.class);
+                goRoute.putExtra("META_DATA", questMetaData);
+                startActivity(goRoute);
+            } else if (nextRound.isQr()) {
+                Intent goQr = new Intent(RadioButtonActivity.this, QrReadActivity.class);
+                goQr.putExtra("META_DATA", questMetaData);
+                startActivity(goQr);
+            } else if (nextRound.isAddInfo()) {
+                Intent goToQuest = new Intent(RadioButtonActivity.this, RoundInfoActivity.class);
+                goToQuest.putExtra("META_DATA", questMetaData);
+                startActivity(goToQuest);
+            } else {
+                switch (nextRound.getQuestionType()) {
+                    case TemporaryQuests.RADIO_BUTTON_TASK_TYPE:
+                        Intent goNextRound = new Intent(RadioButtonActivity.this, RadioButtonActivity.class);
+                        goNextRound.putExtra("META_DATA", questMetaData);
+                        startActivity(goNextRound);
+                        break;
+                    case TemporaryQuests.CHECK_BOX_TASK_TYPE:
+                        goNextRound = new Intent(RadioButtonActivity.this, CheckBoxActivity.class);
+                        goNextRound.putExtra("META_DATA", questMetaData);
+                        startActivity(goNextRound);
+                        break;
+                    case TemporaryQuests.LINK_VARIANTS_TASK_TYPE:
+                        goNextRound = new Intent(RadioButtonActivity.this, LinkVariantsActivity.class);
+                        goNextRound.putExtra("META_DATA", questMetaData);
+                        startActivity(goNextRound);
+                        break;
+                    case TemporaryQuests.EMPTY_TASK_TYPE:
+                        goNextRound = new Intent(RadioButtonActivity.this, AdvertActivity.class);
+                        goNextRound.putExtra("META_DATA", questMetaData);
+                        startActivity(goNextRound);
+                        break;
+                    case TemporaryQuests.EDIT_TEXT_TASK_TYPE:
+                        goNextRound = new Intent(RadioButtonActivity.this, EditTextActivity.class);
+                        goNextRound.putExtra("META_DATA", questMetaData);
+                        startActivity(goNextRound);
+                        break;
+
+                    default:
+                        Toast.makeText(getApplicationContext(), "Данный тип вопроса в разработке", Toast.LENGTH_LONG).show();
+                }
+            }
         }
 
     }
@@ -275,6 +328,7 @@ public class RadioButtonActivity extends YouTubeBaseActivity {
         setUnClickable(taskLayout);
         darkerView.setVisibility(View.VISIBLE);
         afterTaskScrollView.setVisibility(View.VISIBLE);
+        mainScrollView.scrollTo(0, 0);
         if (isRight)
             setAfterTaskRight();
         else
@@ -297,7 +351,7 @@ public class RadioButtonActivity extends YouTubeBaseActivity {
     }
     private void setViews() {
         int roundIdx = questMetaData.lastRoundNum+1;
-        title.setText("Станция " + Integer.toString(roundIdx+1) + ". " + currentRound.getName());
+        title.setText(currentRound.getName());
         question.setText(currentRound.getQuestion());
         setupRadioGroup();
         imageViewSet();
@@ -305,8 +359,8 @@ public class RadioButtonActivity extends YouTubeBaseActivity {
     }
 
     private String retrieveAnswer() {
-        String selectedId = Integer.toString(radioGroup.getCheckedRadioButtonId());
-        return selectedId;
+        int selectedId = radioGroup.getCheckedRadioButtonId();
+        return Integer.toString(selectedId + 1);
     }
     private void setupRadioGroup() {
         String[] variants = currentRound.getVariants();
@@ -327,6 +381,7 @@ public class RadioButtonActivity extends YouTubeBaseActivity {
     }
 
     private void initViews() {
+        mainScrollView = findViewById(R.id.main_scroll_view);
         taskLayout = findViewById(R.id.task_layout);
         title = findViewById(R.id.task_title);
         question = findViewById(R.id.task_question);
